@@ -15,7 +15,7 @@ const ORBIT = 120
 const CR = 44
 const NR = 38
 
-function NodeLabel({ x, y, text, size }: { x: number; y: number; text: string; size: number }) {
+function NodeLabel({ x, y, text, size, color = '#fff' }: { x: number; y: number; text: string; size: number; color?: string }) {
   const lines = text.length > 4
     ? [text.slice(0, Math.ceil(text.length / 2)), text.slice(Math.ceil(text.length / 2))]
     : [text]
@@ -23,7 +23,7 @@ function NodeLabel({ x, y, text, size }: { x: number; y: number; text: string; s
   const startY = y - ((lines.length - 1) * lh) / 2
 
   return (
-    <text textAnchor="middle" fill="#fff" fontSize={size} fontWeight="700" style={{ userSelect: 'none' }}>
+    <text textAnchor="middle" fill={color} fontSize={size} fontWeight="700" style={{ userSelect: 'none' }}>
       {lines.map((line, i) => (
         <tspan key={i} x={x} y={startY + i * lh}>{line}</tspan>
       ))}
@@ -93,8 +93,14 @@ export default function ConceptGraph({ concept }: Props) {
           {/* 2. 외부 노드 */}
           {items.map((it, i) => (
             <g key={i}>
-              <circle cx={it.px} cy={it.py} r={NR} fill={it.isTo ? courseColor : '#94a3b8'} />
-              <NodeLabel x={it.px} y={it.py} text={it.rel.concept.name} size={11} />
+              <circle cx={it.px} cy={it.py} r={NR}
+                fill={it.isTo ? 'white' : '#94a3b8'}
+                stroke={it.isTo ? courseColor : '#94a3b8'}
+                strokeWidth={it.isTo ? 2.5 : 0}
+              />
+              <NodeLabel x={it.px} y={it.py} text={it.rel.concept.name} size={11}
+                color={it.isTo ? courseColor : '#fff'}
+              />
             </g>
           ))}
 
@@ -126,20 +132,20 @@ export default function ConceptGraph({ concept }: Props) {
       <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 space-y-2 text-xs">
         <p className="font-semibold text-gray-500 mb-1">그래프 읽는 법</p>
         <div className="flex items-center gap-2">
-          <span className="flex items-center gap-1">
+          <span className="flex items-center gap-1 shrink-0">
             <span className="inline-block w-3 h-3 rounded-full" style={{ backgroundColor: courseColor }} />
             <span className="text-gray-400">──▶</span>
-            <span className="inline-block w-3 h-3 rounded-full bg-gray-300" />
+            <span className="inline-block w-3 h-3 rounded-full border-2 bg-white" style={{ borderColor: courseColor }} />
           </span>
-          <span className="text-gray-500"><span className="font-medium" style={{ color: courseColor }}>이 개념</span>을 알면 다음으로 배우는 개념</span>
+          <span className="text-gray-500">이 개념을 배운 후 이어지는 개념</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="flex items-center gap-1">
-            <span className="inline-block w-3 h-3 rounded-full bg-gray-300" />
+          <span className="flex items-center gap-1 shrink-0">
+            <span className="inline-block w-3 h-3 rounded-full bg-slate-400" />
             <span className="text-gray-400">──▶</span>
             <span className="inline-block w-3 h-3 rounded-full" style={{ backgroundColor: courseColor }} />
           </span>
-          <span className="text-gray-500"><span className="font-medium text-gray-600">회색 노드</span>는 이 개념의 선수 지식</span>
+          <span className="text-gray-500">이 개념을 이해하기 위한 선행 개념</span>
         </div>
       </div>
     </div>
