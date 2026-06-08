@@ -95,7 +95,7 @@ export default function ConceptGraph({ concept }: Props) {
   const courseColor = courses[concept.course].color
 
   const { nodes, edges } = useMemo(() => {
-    const radius = 130
+    const radius = 160
     const nodes: Node[] = [
       {
         id: 'center',
@@ -157,7 +157,7 @@ export default function ConceptGraph({ concept }: Props) {
       <p className="text-xs text-gray-400">개념 관계 그래프 <span className="text-gray-300">· 드래그/스크롤로 탐색</span></p>
       <div
         className="rounded-xl overflow-hidden border border-gray-200"
-        style={{ height: 400 }}
+        style={{ height: 460 }}
       >
         <ReactFlow
           nodes={nodes}
@@ -175,7 +175,7 @@ export default function ConceptGraph({ concept }: Props) {
           minZoom={0.5}
           maxZoom={1.5}
           fitView
-          fitViewOptions={{ padding: 0.08 }}
+          fitViewOptions={{ padding: 0.04 }}
           proOptions={{ hideAttribution: true }}
         >
           <Background
