@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026AI학습법공모전 사례보고서</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    @page {
+      size: A4;
+      margin: 22mm 18mm 22mm 22mm;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 10.5pt;
+      line-height: 1.75;
+      color: #1a1a1a;
+    }
+
+    @media screen {
+      body { background: #e8e8e8; padding: 24px; }
+      .page {
+        background: white;
+        width: 210mm;
+        min-height: 297mm;
+        margin: 0 auto 24px;
+        padding: 22mm 18mm 22mm 22mm;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.18);
+      }
+    }
+
+    @media print {
+      .page { page-break-after: always; }
+      .page:last-child { page-break-after: auto; }
+    }
+
+    /* ── Typography ── */
+    p { margin-bottom: 0.75em; }
+    ul, ol { padding-left: 1.6em; margin-bottom: 0.75em; }
+    li { margin-bottom: 0.25em; }
+
+    .section { margin-bottom: 2em; }
+
+    .section-title {
+      font-size: 13pt;
+      font-weight: 700;
+      color: #0E7AA4;
+      border-bottom: 2.5px solid #0E7AA4;
+      padding-bottom: 5px;
+      margin-bottom: 1em;
+    }
+
+    .sub-title {
+      font-size: 10.5pt;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin: 1.1em 0 0.45em;
+    }
+
+    /* ── Table ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.8em 0;
+      font-size: 9.5pt;
+    }
+    th {
+      background: #0E7AA4;
+      color: white;
+      padding: 7px 10px;
+      text-align: left;
+      font-weight: 500;
+    }
+    td {
+      padding: 6px 10px;
+      border-bottom: 1px solid #e0e0e0;
+      vertical-align: top;
+    }
+    tr:nth-child(even) td { background: #f7f9fb; }
+
+    /* ── Code ── */
+    pre {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 13px 15px;
+      border-radius: 6px;
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 8.5pt;
+      line-height: 1.55;
+      margin: 0.7em 0;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    code {
+      background: #eef0f2;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 9pt;
+      color: #c7254e;
+    }
+    pre code { background: none; padding: 0; color: inherit; }
+
+    /* ── Callout ── */
+    .callout {
+      background: #f0f7fb;
+      border-left: 4px solid #0E7AA4;
+      padding: 11px 15px;
+      margin: 0.8em 0;
+      border-radius: 0 6px 6px 0;
+      font-size: 9.5pt;
+    }
+    .callout-warn {
+      background: #fff8e1;
+      border-left-color: #f5a623;
+    }
+
+    /* ── Screenshot placeholder / image ── */
+    .screenshot {
+      border: 2px dashed #c0c7ce;
+      border-radius: 8px;
+      background: #f8f9fa;
+      text-align: center;
+      padding: 18px 14px;
+      margin: 0.8em 0;
+      color: #888;
+      font-size: 9pt;
+      line-height: 1.6;
+    }
+    .screenshot-img {
+      max-width: 100%;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      display: block;
+      margin: 0.8em 0;
+    }
+    .screenshot-caption {
+      font-size: 8.5pt;
+      color: #888;
+      text-align: center;
+      margin-top: -4px;
+      margin-bottom: 0.8em;
+    }
+
+    /* ── App UI mock blocks ── */
+    .feedback-good {
+      background: #f0fff4;
+      border-left: 3px solid #28a745;
+      padding: 9px 13px;
+      margin: 0.5em 0;
+      border-radius: 0 5px 5px 0;
+      font-size: 9.5pt;
+    }
+    .feedback-bad {
+      background: #fff5f5;
+      border-left: 3px solid #e53e3e;
+      padding: 9px 13px;
+      margin: 0.5em 0;
+      border-radius: 0 5px 5px 0;
+      font-size: 9.5pt;
+    }
+    .score-box {
+      background: #ebf8ff;
+      border: 2px solid #0E7AA4;
+      padding: 9px 13px;
+      border-radius: 7px;
+      text-align: center;
+      font-weight: 700;
+      color: #0E7AA4;
+      margin: 0.7em 0;
+      font-size: 10pt;
+    }
+
+    /* ── Flow ── */
+    .flow {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 0.9em 0;
+      flex-wrap: wrap;
+    }
+    .flow-step {
+      background: #0E7AA4;
+      color: white;
+      padding: 7px 12px;
+      border-radius: 6px;
+      font-size: 9pt;
+      font-weight: 500;
+      text-align: center;
+      min-width: 82px;
+    }
+    .flow-arrow { font-size: 13pt; color: #0E7AA4; font-weight: 700; }
+
+    /* ── Cover ── */
+    .cover {
+      display: flex;
+      flex-direction: column;
+      min-height: 253mm;
+      justify-content: space-between;
+    }
+    .cover-category {
+      display: inline-block;
+      background: #f0f7fb;
+      border: 1.5px solid #0E7AA4;
+      color: #0E7AA4;
+      padding: 3px 14px;
+      border-radius: 20px;
+      font-size: 9.5pt;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    .cover-contest {
+      font-size: 10pt;
+      color: #666;
+      margin-bottom: 32px;
+    }
+    .cover-title {
+      font-size: 22pt;
+      font-weight: 900;
+      line-height: 1.3;
+      color: #0a3d56;
+      margin-bottom: 10px;
+      letter-spacing: -0.5pt;
+    }
+    .cover-subtitle {
+      font-size: 12pt;
+      color: #444;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    .cover-abstract {
+      background: #f0f7fb;
+      border-radius: 8px;
+      padding: 16px 18px;
+      font-size: 9.5pt;
+      color: #333;
+      line-height: 1.8;
+    }
+    .cover-meta {
+      border-top: 2px solid #0E7AA4;
+      padding-top: 14px;
+    }
+    .cover-meta table { margin: 0; }
+    .cover-meta td {
+      padding: 4px 0 4px 10px;
+      border-bottom: none;
+      background: none;
+      font-size: 10pt;
+    }
+    .cover-meta td:first-child {
+      color: #0E7AA4;
+      font-weight: 600;
+      width: 70px;
+      padding-left: 0;
+    }
+
+    /* ── Misc ── */
+    .text-muted { color: #666; font-size: 9pt; }
+    .highlight { background: #fff3cd; padding: 1px 3px; border-radius: 2px; }
+    strong { font-weight: 700; }
+    em { font-style: italic; }
+
+    pre, table, .callout, .feedback-good, .feedback-bad, .screenshot {
+      page-break-inside: avoid;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════ 표지 ═══════════════════════ -->
+<div class="page">
+  <div class="cover">
+
+    <div>
+      <div class="cover-contest">2026학년도 HYCU AI 학습법 공모전 — 사례보고서</div>
+      <div>
+        <span class="cover-category">분류 5 · AI 또는 바이브코딩으로 나만의 학습도구 제작</span>
+      </div>
+      <br>
+      <div class="cover-title">
+        AI에게 설명하게 하지 말고,<br>AI에게 내가 설명하자
+      </div>
+      <div class="cover-subtitle">
+        소크라테스식 AI 튜터 <strong>AI's TUDY</strong> 제작 및 활용 사례
+      </div>
+      <div class="cover-abstract">
+        현직 소프트웨어 개발자로서 HYCU 사이버대학교에서 알고리즘실무·자바프로그래밍을 수강하며,
+        기존 AI 활용 학습법의 구조적 한계를 경험했다.
+        "AI가 설명해주면 이해한 것 같지만 금방 잊어버린다"는 문제의식에서 출발하여,
+        <strong>학생이 AI에게 설명하고 AI가 질문으로 유도하는</strong> 역할 반전 학습 도구
+        <strong>AI's TUDY</strong>를 Claude API와 바이브코딩으로 직접 개발·활용했다.
+        소크라테스 문답법을 코드로 구현하고 실제 기말고사 대비에 사용한 전 과정을 기록했다.
+      </div>
+    </div>
+
+    <div class="cover-meta">
+      <table>
+        <tr><td>분류</td><td>5. AI 또는 바이브코딩으로 나만의 학습도구 제작</td></tr>
+        <tr><td>이름</td><td>[이름]</td></tr>
+        <tr><td>학번</td><td>[학번]</td></tr>
+        <tr><td>학과</td><td>[학과]</td></tr>
+        <tr><td>제출일</td><td>2026년 6월 14일</td></tr>
+        <tr><td>GitHub</td><td>https://github.com/JJleem/tudy</td></tr>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════ 1·2장 ═══════════════════════ -->
+<div class="page">
+
+  <!-- 1. 도입 -->
+  <div class="section">
+    <h2 class="section-title">1. 도입 — 현직 개발자의 학습 딜레마</h2>
+
+    <p>
+      나는 현직 소프트웨어 개발자이면서 HYCU 사이버대학교 컴퓨터공학과에 재학 중이다.
+      업무상 새로운 기술을 빠르게 익혀야 하고, AI 도구도 일상적으로 쓴다.
+      그런데 기말고사 시즌이 되면 이상한 경험이 반복됐다.
+    </p>
+
+    <div class="callout">
+      <strong>"강의도 봤고, ChatGPT·Claude에게도 물어봤는데 — 막상 시험 전날 개념을 설명하려니 아무 말도 안 나온다."</strong>
+    </div>
+
+    <p>
+      원인을 분석해봤다. 기존 AI 활용 방식은 이랬다:
+      <em>"퀵 정렬이 뭐야?"</em> → AI가 친절하게 설명 → 읽으면 이해된 것 같음 →
+      며칠 후 기억에 남은 게 없음.
+      이것은 <strong>수동적 학습(Passive Learning)</strong>의 전형적인 한계다.
+      듣고 읽는 행위만으로는 장기 기억이 형성되지 않는다.
+    </p>
+
+    <p>
+      반면, 누군가에게 개념을 설명하려 할 때 우리는 아는 것과 모르는 것의 경계를 정확히 인식하게 된다.
+      심리학에서는 이를 <strong>Protégé Effect(제자 효과)</strong>라 부른다 —
+      가르치기 위해 준비하는 과정이 오히려 본인의 이해를 깊게 만든다.
+    </p>
+
+    <h3 class="sub-title">기존 AI 학습 도구의 문제점</h3>
+    <table>
+      <thead><tr><th>방식</th><th>학습자 역할</th><th>문제점</th></tr></thead>
+      <tbody>
+        <tr><td>ChatGPT / Claude 질문</td><td>질문자</td><td>AI가 설명 → 수동 수용 → 얕은 이해</td></tr>
+        <tr><td>유튜브·강의 영상</td><td>시청자</td><td>이해한 것 같지만 직접 설명 못 함</td></tr>
+        <tr><td>퀴즈 앱</td><td>정답 선택</td><td>기계적 암기 유도, 개념 간 연결 없음</td></tr>
+        <tr><td><strong>AI's TUDY (제작)</strong></td><td><strong>설명자</strong></td><td><strong>학생이 설명 → AI가 질문 → 능동적 이해 심화</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 2. 아이디어 -->
+  <div class="section">
+    <h2 class="section-title">2. 아이디어 — 역할 반전 학습</h2>
+
+    <p>
+      핵심 아이디어는 단순하다: <strong>"AI가 설명하는 것이 아니라, 학생이 AI에게 설명한다."</strong>
+    </p>
+
+    <p>
+      소크라테스 문답법(Socratic Method)에서 영감을 얻었다.
+      소크라테스는 지식을 직접 전달하지 않았다 — 끊임없는 질문으로 상대가 스스로 답을 찾게 했다.
+      AI는 이 역할에 완벽하다. 지치지 않고, 판단하지 않으며, 학생의 답변 수준에 맞게 정확한 질문을 던진다.
+    </p>
+
+    <div class="callout">
+      <strong>핵심 컨셉:</strong> 학생이 개념 설명 → AI가 맞은 부분 인정·빠진 부분 질문 →
+      학생이 다시 설명 → 반복 → 이해도 100점 달성
+    </div>
+
+    <div class="flow">
+      <div class="flow-step">개념 선택</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">학생이 설명</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">AI 피드백 + 질문</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">이해도 측정</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">100점 달성</div>
+    </div>
+
+    <p>
+      기존 도구와의 결정적 차이는 <strong>학습자의 역할</strong>이다.
+      AI's TUDY에서 AI는 절대 먼저 설명하지 않는다.
+      학생이 먼저 설명해야 하고, AI는 어느 부분이 맞고 어느 부분이 빠졌는지를 질문의 형태로 알려준다.
+      학생은 설명을 반복하며 스스로 개념을 완성한다.
+    </p>
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════ 3장: 개발 과정 ═══════════════════════ -->
+<div class="page">
+
+  <div class="section">
+    <h2 class="section-title">3. 개발 과정 — 바이브코딩으로 3일 만에</h2>
+
+    <p>
+      별도 설계 문서 없이 Claude와 대화하며 코드를 완성하는 <strong>바이브코딩(Vibe Coding)</strong> 방식으로 개발했다.
+      아이디어를 말하면 Claude가 코드를 제안하고, 실행해서 문제가 생기면 다시 Claude에게 상황을 설명하며 수정한다.
+    </p>
+
+    <h3 class="sub-title">기술 스택 선택</h3>
+    <table>
+      <thead><tr><th>역할</th><th>기술</th><th>선택 이유</th></tr></thead>
+      <tbody>
+        <tr><td>Frontend</td><td>Next.js 16 + TypeScript + Tailwind CSS v4</td><td>Vercel 무료 배포, 서버·클라이언트 컴포넌트 분리 명확</td></tr>
+        <tr><td>AI</td><td>Claude API — <code>claude-sonnet-4-6</code></td><td>한국어 우수, 복잡한 시스템 프롬프트 준수 능력</td></tr>
+        <tr><td>스트리밍</td><td>SSE (Server-Sent Events)</td><td>응답이 실시간 타이핑으로 표시 → UX 향상</td></tr>
+        <tr><td>저장소</td><td>localStorage (DB 없음)</td><td>서버 비용 0원, 세션 영속성은 브라우저로 충분</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="sub-title">핵심 도전 1 — 소크라테스 프롬프트 설계</h3>
+    <p>
+      가장 어려운 부분이었다. "질문만 하세요"라고 하면 AI는 금방 직접 설명을 시작했다.
+      수십 번의 반복 끝에 <strong>턴 기반 단계별 지침 주입</strong>을 완성했다.
+      각 턴마다 AI가 해야 할 행동을 시스템 프롬프트에 동적으로 추가한다:
+    </p>
+
+    <pre>
+## 절대 규칙
+- 개념을 먼저 설명하지 마세요. 학생이 설명하게 만드세요.
+- 한 번에 질문은 하나만 하세요. 응답은 6문장 이내.
+- 반드시 한국어로만 대화하세요.
+
+## 턴별 동작 (lib/prompts.ts → getPhaseGuide(turn))
+- 1턴  : feedback-good / feedback-bad 블록 필수 — 초기 평가
+- 2~3턴: 아직 다루지 않은 체크포인트 중심 피드백
+- 4턴  : 심화 질문 (실제 코드 / 엣지케이스)
+- 5턴  : 중간 정리 + score-box(이해도 점수) 필수
+- 6턴+ : 매 턴 점수 업데이트, 100점 전 종료 금지</pre>
+
+    <h3 class="sub-title">핵심 도전 2 — Claude API SSE 스트리밍 구현</h3>
+    <p>
+      응답이 실시간으로 화면에 타이핑되도록 SSE 방식으로 구현했다.
+      Next.js API Route에서 Claude 스트림을 그대로 클라이언트로 전달한다:
+    </p>
+
+    <pre>
+// app/api/chat/route.ts
+const stream = await anthropic.messages.stream({
+  model: 'claude-sonnet-4-6',
+  max_tokens: 1024,
+  system: getSocratesSystemPrompt(concept, courseName, turn),  // 턴 주입
+  messages,
+})
+
+const encoder = new TextEncoder()
+const readable = new ReadableStream({
+  async start(controller) {
+    for await (const chunk of stream) {
+      if (chunk.type === 'content_block_delta') {
+        controller.enqueue(encoder.encode(
+          `data: ${JSON.stringify({ text: chunk.delta.text })}\n\n`
+        ))
+      }
+    }
+    controller.enqueue(encoder.encode('data: [DONE]\n\n'))
+    controller.close()
+  },
+})
+return new Response(readable, { headers: { 'Content-Type': 'text/event-stream' } })</pre>
+
+    <h3 class="sub-title">핵심 도전 3 — 피드백 UI 구현 및 렌더링 문제 해결</h3>
+    <p>
+      AI 응답 안에 HTML 블록이 포함되어 화면에서 색상 구분 피드백으로 렌더링된다.
+      일반 마크다운 파서(<code>react-markdown</code>)는 HTML 블록 내부의 <code>**굵게**</code>를
+      처리하지 않는 문제를 발견했다.
+      <code>rehype-raw</code> 플러그인을 추가해도 마찬가지였다.
+      직접 전처리 함수를 작성해 div 내부의 마크다운을 미리 HTML 태그로 변환하여 해결했다:
+    </p>
+
+    <pre>
+// components/SocratesChat.tsx
+function preprocessMarkdownInHtml(content: string): string {
+  return content.replace(
+    /(&lt;div[^>]*&gt;)([\s\S]*?)(&lt;\/div&gt;)/g,
+    (_, open, inner, close) => {
+      const processed = inner
+        .replace(/\*\*(.+?)\*\*/g, '&lt;strong&gt;$1&lt;/strong&gt;')
+        .replace(/\*(.+?)\*/g, '&lt;em&gt;$1&lt;/em&gt;')
+      return open + processed + close
+    }
+  )
+}</pre>
+
+    <p>
+      AI 응답에서 아래와 같이 색상 구분 피드백이 렌더링된다
+      (본문 표시용 — 실제 앱에서의 모습):
+    </p>
+
+    <div style="display: flex; gap: 12px; flex-wrap: wrap; margin: 0.6em 0;">
+      <div class="feedback-good" style="flex: 1; min-width: 180px;">
+        ✅ <strong>이해한 부분</strong> — 초록 블록으로 표시
+      </div>
+      <div class="feedback-bad" style="flex: 1; min-width: 180px;">
+        ❌ <strong>빠진/틀린 부분</strong> — 빨강 블록으로 표시
+      </div>
+    </div>
+    <div class="score-box">🎯 이해도 점수: <strong>72 / 100</strong></div>
+
+    <h3 class="sub-title">주요 파일 구조</h3>
+    <table>
+      <thead><tr><th>파일</th><th>역할</th></tr></thead>
+      <tbody>
+        <tr><td><code>lib/prompts.ts</code></td><td>소크라테스 시스템 프롬프트 + 12개 개념 체크포인트 + 턴별 지침</td></tr>
+        <tr><td><code>app/api/chat/route.ts</code></td><td>Claude API SSE 스트리밍 엔드포인트</td></tr>
+        <tr><td><code>components/SocratesChat.tsx</code></td><td>대화 UI + localStorage 세션 영속성 + 세션 요약</td></tr>
+        <tr><td><code>components/ConceptGraph.tsx</code></td><td>SVG 개념 관계 그래프 (노드 클릭 이동)</td></tr>
+        <tr><td><code>lib/concepts.ts</code></td><td>알고리즘 6개 + 자바 6개 개념 데이터 + 엣지 관계</td></tr>
+      </tbody>
+    </table>
+
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════ 4장: 실제 활용 ═══════════════════════ -->
+<div class="page">
+
+  <div class="section">
+    <h2 class="section-title">4. 실제 활용 — 기말고사 대비 학습 세션</h2>
+
+    <!-- 스크린샷 있으면 아래 주석 해제하고 placeholder 삭제 -->
+    <!-- <img src="screenshots/home.png" class="screenshot-img" alt="홈화면"> -->
+
+    <div class="screenshot">
+      📸 <strong>홈화면 스크린샷</strong><br>
+      AI's TUDY 로고 + 알고리즘실무 / 자바프로그래밍 카드<br>
+      <span style="font-size: 8pt;">→ screenshots/home.png 추가 후 위 img 태그로 교체</span>
+    </div>
+    <p class="screenshot-caption">▲ 그림 1. AI's TUDY 홈화면 — 과목별 카드와 학습 진도 배지</p>
+
+    <h3 class="sub-title">4.1 알고리즘실무 — 동적 프로그래밍(DP)</h3>
+    <p>
+      기말고사 범위 중 가장 불안했던 동적 프로그래밍을 첫 세션으로 선택했다.
+      강의에서 '최적 부분 구조', '중복 부분 문제'라는 용어는 알고 있었지만
+      막상 설명하려니 말이 막혔다.
+    </p>
+    <p>
+      AI's TUDY에서 DP 개념 카드를 열면, AI가 먼저 묻는다:
+      <em>"동적 프로그래밍이 무엇인지 본인의 말로 설명해보세요."</em>
+      내가 아는 것부터 설명하자 AI는 맞은 부분(✅ 메모이제이션 언급)과
+      빠진 부분(❌ 최적 부분 구조 미설명)을 분리해 보여주고,
+      직접 설명하는 대신 <em>"왜 피보나치 수열이 DP의 전형적인 예인지 설명해보세요"</em>로 유도했다.
+    </p>
+
+    <div class="screenshot">
+      📸 <strong>DP 학습 세션 스크린샷</strong><br>
+      피드백 초록/빨강 블록 + 이해도 점수 박스가 보이는 대화 화면<br>
+      <span style="font-size: 8pt;">→ screenshots/session-dp.png 추가 후 img 태그로 교체</span>
+    </div>
+    <p class="screenshot-caption">▲ 그림 2. 동적 프로그래밍 세션 — AI 피드백 UI</p>
+
+    <p class="text-muted">총 [N]번 턴, 최종 이해도 점수 [N] / 100점 — [날짜]</p>
+
+    <h3 class="sub-title">4.2 알고리즘실무 — 그래프 탐색(BFS/DFS)</h3>
+    <p>
+      BFS와 DFS를 언제 쓰는지, 왜 BFS가 최단 경로를 보장하는지가 헷갈렸다.
+      턴 4에서 AI가 심화 질문을 던졌다:
+      <em>"미로 탈출 문제라면 BFS와 DFS 중 어느 것이 더 적합한가요? 이유까지 설명해보세요."</em>
+      이 질문 하나로 두 알고리즘의 근본적 차이가 명확해졌다.
+    </p>
+
+    <div class="screenshot">
+      📸 <strong>BFS/DFS 학습 세션 + 이해 로그 패널 스크린샷</strong><br>
+      사이드바 이해 로그가 누적된 전체 레이아웃<br>
+      <span style="font-size: 8pt;">→ screenshots/session-bfs.png 추가 후 img 태그로 교체</span>
+    </div>
+    <p class="screenshot-caption">▲ 그림 3. BFS/DFS 세션 — 이해 로그 패널에 이해 항목 누적</p>
+
+    <p class="text-muted">총 [N]번 턴, 최종 이해도 점수 [N] / 100점 — [날짜]</p>
+
+    <h3 class="sub-title">4.3 자바프로그래밍 — OOP 4대 원칙</h3>
+    <p>
+      캡슐화·상속·다형성·추상화를 "이름은 아는데 연결해서 설명 못 하는" 상태였다.
+      8턴 이후 세션 요약 버튼을 눌러, 이번 세션에서 이해한 것과 아직 부족한 부분을 MD 파일로 저장했다.
+    </p>
+
+    <div class="screenshot">
+      📸 <strong>OOP 세션 요약 모달 스크린샷</strong><br>
+      ✅ 이해한 개념 / ❌ 부족한 부분 / 🎯 최종 점수가 포함된 요약 모달<br>
+      <span style="font-size: 8pt;">→ screenshots/summary.png 추가 후 img 태그로 교체</span>
+    </div>
+    <p class="screenshot-caption">▲ 그림 4. 세션 요약 모달 — 학습 내용 자동 정리 및 MD 다운로드</p>
+
+    <p class="text-muted">총 [N]번 턴, 최종 이해도 점수 [N] / 100점 — [날짜]</p>
+
+    <h3 class="sub-title">4.4 개념 관계 그래프</h3>
+    <p>
+      개념 선택 화면에서 SVG 그래프로 개념 간 연결 관계를 시각화한다.
+      예를 들어 재귀(Recursion) 노드에서 동적 프로그래밍(DP)으로 이어지는 선이 보이고,
+      클릭하면 해당 개념 학습으로 바로 이동한다. 개념 간 선후 관계가 시각화되어
+      어떤 개념을 먼저 공부해야 할지 파악이 쉬웠다.
+    </p>
+
+    <div class="screenshot">
+      📸 <strong>개념 관계 그래프 스크린샷</strong><br>
+      SVG 노드 + 연결선, 호버 강조 효과<br>
+      <span style="font-size: 8pt;">→ screenshots/graph.png 추가 후 img 태그로 교체</span>
+    </div>
+    <p class="screenshot-caption">▲ 그림 5. 개념 관계 SVG 그래프</p>
+
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════ 5·6장 + 부록 ═══════════════════════ -->
+<div class="page">
+
+  <!-- 5. 결과 및 효과 -->
+  <div class="section">
+    <h2 class="section-title">5. 결과 및 효과</h2>
+
+    <h3 class="sub-title">5.1 학습 방식의 변화</h3>
+    <table>
+      <thead><tr><th>기존 방식</th><th>AI's TUDY 활용 후</th></tr></thead>
+      <tbody>
+        <tr><td>강의 수동 시청 → 이해한 것 같음</td><td>개념 설명 → 아는 것/모르는 것 경계 명확화</td></tr>
+        <tr><td>AI에게 "설명해줘" 요청</td><td>AI에게 내가 먼저 설명 — 능동적 학습</td></tr>
+        <tr><td>학습 후 빠른 망각</td><td>빠진 부분을 질문으로 파고드니 오래 기억</td></tr>
+        <tr><td>학습 진척 파악 불가</td><td>이해도 점수·이해 로그로 진척 가시화</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="sub-title">5.2 정량적 지표</h3>
+    <div class="callout callout-warn">
+      ⚠️ 아래 수치는 6/10~12 기말 공부 세션 완료 후 실측값으로 업데이트
+    </div>
+    <ul>
+      <li>총 학습 세션: [N]회 (알고리즘실무 [N]회 / 자바 [N]회)</li>
+      <li>다룬 개념: [N] / 12개</li>
+      <li>평균 이해도 달성 점수: [N] / 100점</li>
+      <li>평균 대화 턴: [N]턴 / 세션</li>
+    </ul>
+
+    <h3 class="sub-title">5.3 기술적 성과</h3>
+    <p>
+      개발 과정 자체도 학습이었다. Claude API의 SSE 스트리밍을 처음 구현했고,
+      HTML과 마크다운이 혼합된 콘텐츠를 렌더링하는 문제를 직접 해결했다.
+      <code>rehype-raw</code>가 HTML 내부 마크다운을 처리하지 않는 한계를 발견하고
+      50줄 미만의 전처리 함수로 해결한 것이 특히 기억에 남는다.
+    </p>
+    <p>
+      아이디어 구체화에서 Vercel 배포까지 약 <strong>3일</strong>이 걸렸다.
+      바이브코딩 방식이 아니었다면 훨씬 오래 걸렸을 것이다.
+    </p>
+  </div>
+
+  <!-- 6. 한계 및 개선 방향 -->
+  <div class="section">
+    <h2 class="section-title">6. 한계 및 개선 방향</h2>
+
+    <h3 class="sub-title">6.1 현재 한계</h3>
+    <table>
+      <thead><tr><th>한계</th><th>구체적 상황</th></tr></thead>
+      <tbody>
+        <tr><td><strong>AI 오답 가능성</strong></td><td>AI가 피드백에서 잘못된 정보를 줄 수 있음. 학생이 검증하기 어려울 수 있음.</td></tr>
+        <tr><td><strong>개념 범위 한정</strong></td><td>12개 개념만 지원. 수업 전체 범위 커버 불가.</td></tr>
+        <tr><td><strong>인터넷 필수</strong></td><td>Claude API 호출 필요 — 오프라인 불가, API 비용 발생.</td></tr>
+        <tr><td><strong>기기 간 미동기화</strong></td><td>localStorage 기반 — 브라우저 캐시 삭제 시 데이터 소실, 기기 간 공유 불가.</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="sub-title">6.2 개선 방향</h3>
+    <ul>
+      <li><strong>교재 연동</strong> — AI 피드백에 "교재 N페이지 참고" 링크로 오답 리스크 감소</li>
+      <li><strong>개념 확장</strong> — 체크포인트 JSON 수정만으로 어떤 과목이든 추가 가능한 구조 이미 설계됨</li>
+      <li><strong>다기기 동기화</strong> — 경량 REST API + 사용자 토큰으로 세션 클라우드 저장 가능</li>
+      <li><strong>학습 분석</strong> — 여러 세션의 이해도 점수 추이를 그래프로 시각화하여 취약 개념 파악</li>
+    </ul>
+
+    <h3 class="sub-title">6.3 결론</h3>
+    <div class="callout">
+      <p style="margin-bottom: 0;">
+        AI 학습 도구의 아이러니는 <strong>"AI가 너무 잘 가르친다"</strong>는 것이다.
+        친절한 AI 설명은 학습자를 수동적 수용자로 만든다.
+        <strong>AI's TUDY</strong>는 이 관계를 뒤집어, AI를 "나를 설명하게 만드는 장치"로 활용한다.
+        소크라테스가 2400년 전에 발견한 진실 — <em>"가르치는 자가 배운다"</em> — 을
+        Claude API와 바이브코딩으로 구현한 실험이었다.
+      </p>
+    </div>
+  </div>
+
+  <!-- 부록 -->
+  <div class="section">
+    <h2 class="section-title">부록 — AI 증빙자료 목록</h2>
+    <table>
+      <thead><tr><th>#</th><th>유형</th><th>내용 및 위치</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>바이브코딩 결과물</td><td>GitHub: https://github.com/JJleem/tudy</td></tr>
+        <tr><td>2</td><td>프롬프트 캡처</td><td>개발 중 Claude 대화 주요 장면 (별첨)</td></tr>
+        <tr><td>3</td><td>최종 산출물 화면</td><td>본문 4섹션 그림 1~5</td></tr>
+        <tr><td>4</td><td>시연 영상</td><td>앱 동작 영상 1~2분 (별첨)</td></tr>
+        <tr><td>5</td><td>학습 세션 캡처</td><td>본문 4.1~4.3 스크린샷</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+</body>
+</html>
