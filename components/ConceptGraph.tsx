@@ -52,11 +52,13 @@ export default function ConceptGraph({ concept }: Props) {
       const x2 = isTo ? px - nx * (NR + 5)   : CX + nx * (CR + 5)
       const y2 = isTo ? py - ny * (NR + 5)   : CY + ny * (CR + 5)
 
+      const labelW = rel.label.length * 11 + 14
+
       return {
-        px, py, nx, ny, isTo, rel,
+        px, py, nx, ny, isTo, rel, labelW,
         x1, y1, x2, y2,
-        lx: (x1 + x2) / 2 - ny * 16,
-        ly: (y1 + y2) / 2 + nx * 16,
+        lx: (x1 + x2) / 2 - ny * 22,
+        ly: (y1 + y2) / 2 + nx * 22,
       }
     }),
     [related]
@@ -103,8 +105,8 @@ export default function ConceptGraph({ concept }: Props) {
           {items.map((it, i) => (
             <g key={i}>
               <rect
-                x={it.lx - 22} y={it.ly - 9}
-                width={44} height={18}
+                x={it.lx - it.labelW / 2} y={it.ly - 9}
+                width={it.labelW} height={18}
                 rx={4} fill="white"
                 stroke={it.isTo ? courseColor : '#94a3b8'}
                 strokeWidth={1}
