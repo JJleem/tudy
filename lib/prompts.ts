@@ -45,11 +45,10 @@ function getPhaseGuide(turn: number): string {
 - 점수가 100점 미만이면 "계속 대화해서 부족한 부분을 채워봐요." 로 마무리하세요.`
   }
   return `## 지금 해야 할 것 (${turn}번째 답변 — 심화 학습 계속)
-- 중간 정리는 이미 완료됐습니다. 학생이 추가로 설명하거나 묻는 내용에 맞춰 대화를 이어가세요.
-- 여전히 개념을 직접 설명하기보다 질문으로 이해를 유도하세요.
-- 이해가 깊어진 부분은 feedback-good 블록으로 인정하세요.
-- 새로운 오개념이 보이면 feedback-bad 블록으로 짚어주세요.
-- 이해도가 이전보다 유의미하게 달라졌다면 score-box로 갱신된 점수를 보여주세요.`
+- 학생의 답변을 feedback-good / feedback-bad 블록으로 평가하세요.
+- 아직 부족한 부분이 있으면 질문으로 유도하세요. 직접 설명하지 마세요.
+- 응답 마지막에 score-box로 현재 이해도 점수를 반드시 업데이트하세요.
+- 100점이 되면 "완전히 이해하셨네요! 🎉" 로 마무리하세요.`
 }
 
 export function getSocratesSystemPrompt(concept: Concept, courseName: string, turn: number = 1): string {
