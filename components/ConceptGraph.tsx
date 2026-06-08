@@ -53,17 +53,12 @@ export default function ConceptGraph({ concept }: Props) {
       const y2 = isTo ? py - ny * (NR + 5)   : CY + ny * (CR + 5)
 
       const labelW = rel.label.length * 11 + 14
-      const mx = (x1 + x2) / 2
-      const my = (y1 + y2) / 2
-      const cpx = mx - ny * 34
-      const cpy = my + nx * 34
-      // 베지어 t=0.5 위치
-      const lx = (x1 + 2 * cpx + x2) / 4
-      const ly = (y1 + 2 * cpy + y2) / 4
+      const lx = (x1 + x2) / 2 - ny * 30
+      const ly = (y1 + y2) / 2 + nx * 30
 
       return {
         px, py, isTo, rel, labelW,
-        x1, y1, x2, y2, cpx, cpy, lx, ly,
+        x1, y1, x2, y2, lx, ly,
       }
     }),
     [related]
@@ -86,12 +81,11 @@ export default function ConceptGraph({ concept }: Props) {
             </marker>
           </defs>
 
-          {/* 1. 엣지 곡선만 먼저 */}
+          {/* 1. 엣지 직선 */}
           {items.map((it, i) => (
-            <path key={i}
-              d={`M ${it.x1} ${it.y1} Q ${it.cpx} ${it.cpy} ${it.x2} ${it.y2}`}
+            <line key={i}
+              x1={it.x1} y1={it.y1} x2={it.x2} y2={it.y2}
               stroke={it.isTo ? courseColor : '#94a3b8'} strokeWidth={2.5}
-              fill="none"
               markerEnd={`url(#${it.isTo ? toId : fromId})`}
             />
           ))}
