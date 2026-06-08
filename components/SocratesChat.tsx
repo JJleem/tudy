@@ -104,6 +104,10 @@ export default function SocratesChat({ concept, onInsight }: Props) {
   const [restored, setRestored] = useState(false)
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
+  const [showSummary, setShowSummary] = useState(false)
+  const [summaryText, setSummaryText] = useState('')
+  const [summaryLoading, setSummaryLoading] = useState(false)
+  const [copied, setCopied] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
   const courseColor = courses[concept.course].color
   const storageKey = `chat_${concept.id}`
@@ -133,6 +137,67 @@ export default function SocratesChat({ concept, onInsight }: Props) {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
+
+  async function handleSummary() {
+    setShowSummary(true)
+    setSummaryText('')
+    setSummaryLoading(true)
+
+    const res = await fetch('/api/summary', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: messages.map(({ role, content }) => ({ role, content })),
+        conceptName: concept.name,
+      }),
+    })
+
+    if (!res.ok || !res.body) {
+      setSummaryLoading(false)
+      return
+    }
+
+    const reader = res.body.getReader()
+    const decoder = new TextDecoder()
+    let text = ''
+
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) break
+      const lines = decoder.decode(value).split('\n')
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue
+        const data = line.slice(6)
+        if (data === '[DONE]') break
+        try {
+          const { text: chunk } = JSON.parse(data)
+          text += chunk
+          setSummaryText(text)
+        } catch {}
+      }
+    }
+
+    localStorage.setItem(`summary_${concept.id}`, text)
+    setSummaryLoading(false)
+  }
+
+  function downloadSummary() {
+    const date = new Date().toISOString().split('T')[0]
+    const filename = `${concept.name}_학습요약_${date}.md`
+    const blob = new Blob([summaryText], { type: 'text/markdown' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = filename
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  async function copySummary() {
+    await navigator.clipboard.writeText(summaryText)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
 
   async function sendToAPI(msgs: Message[]) {
     setLoading(true)
@@ -266,6 +331,19 @@ export default function SocratesChat({ concept, onInsight }: Props) {
         <div ref={bottomRef} />
       </div>
 
+      {messages.length >= 8 && (
+        <div className="px-4 py-2 border-t border-gray-100 flex justify-center">
+          <button
+            onClick={handleSummary}
+            disabled={summaryLoading || loading}
+            className="text-xs px-4 py-2 rounded-lg border font-medium transition-colors hover:opacity-80 disabled:opacity-40"
+            style={{ borderColor: courseColor, color: courseColor }}
+          >
+            {summaryLoading ? '요약 생성 중...' : '📋 이 세션 요약하기'}
+          </button>
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="p-4 border-t border-gray-200">
         <div className="flex gap-2">
           <input
@@ -285,6 +363,63 @@ export default function SocratesChat({ concept, onInsight }: Props) {
           </button>
         </div>
       </form>
+
+      {showSummary && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onClick={() => setShowSummary(false)}
+        >
+          <div
+            className="bg-white rounded-2xl w-full max-w-md max-h-[80vh] flex flex-col shadow-2xl"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+              <h3 className="font-bold text-gray-900 text-sm">
+                {concept.name} 학습 요약
+              </h3>
+              <button
+                onClick={() => setShowSummary(false)}
+                className="text-gray-400 hover:text-gray-600 text-lg leading-none"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-5 py-4 text-sm text-gray-800">
+              {summaryLoading && !summaryText ? (
+                <div className="flex items-center gap-2 text-gray-400">
+                  <span className="animate-bounce">·</span>
+                  <span className="animate-bounce [animation-delay:0.1s]">·</span>
+                  <span className="animate-bounce [animation-delay:0.2s]">·</span>
+                  <span className="text-xs ml-1">요약 생성 중...</span>
+                </div>
+              ) : (
+                <ReactMarkdown rehypePlugins={[rehypeRaw]} components={mdComponents}>
+                  {summaryText}
+                </ReactMarkdown>
+              )}
+            </div>
+
+            {!summaryLoading && summaryText && (
+              <div className="flex gap-2 px-5 py-4 border-t border-gray-100">
+                <button
+                  onClick={copySummary}
+                  className="flex-1 py-2.5 rounded-xl border border-gray-200 text-xs text-gray-600 hover:bg-gray-50 transition-colors"
+                >
+                  {copied ? '✅ 복사됨' : '📋 클립보드 복사'}
+                </button>
+                <button
+                  onClick={downloadSummary}
+                  className="flex-1 py-2.5 rounded-xl text-white text-xs font-medium transition-opacity hover:opacity-80"
+                  style={{ backgroundColor: courseColor }}
+                >
+                  ⬇️ .md 다운로드
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

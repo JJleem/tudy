@@ -1,6 +1,7 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { getRelatedConcepts, courses, Concept } from '@/lib/concepts'
 
 interface Props {
@@ -34,6 +35,8 @@ function NodeLabel({ x, y, text, size, color = '#fff' }: { x: number; y: number;
 export default function ConceptGraph({ concept }: Props) {
   const related = getRelatedConcepts(concept.id)
   const courseColor = courses[concept.course].color
+  const router = useRouter()
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
   const items = useMemo(() =>
     related.map((rel, i) => {
@@ -69,7 +72,7 @@ export default function ConceptGraph({ concept }: Props) {
 
   return (
     <div className="w-full flex flex-col gap-3">
-      <p className="text-xs text-gray-400">개념 관계 그래프</p>
+      <p className="text-xs text-gray-400">개념 관계 그래프 <span className="text-gray-300">— 노드 클릭 시 해당 개념으로 이동</span></p>
       <div className="rounded-xl border border-gray-200 bg-gray-50">
         <svg width="100%" viewBox={`0 0 ${W} ${H}`} overflow="visible" style={{ display: 'block' }}>
           <defs>
@@ -90,19 +93,31 @@ export default function ConceptGraph({ concept }: Props) {
             />
           ))}
 
-          {/* 2. 외부 노드 */}
-          {items.map((it, i) => (
-            <g key={i}>
-              <circle cx={it.px} cy={it.py} r={NR}
-                fill={it.isTo ? 'white' : '#94a3b8'}
-                stroke={it.isTo ? courseColor : '#94a3b8'}
-                strokeWidth={it.isTo ? 2.5 : 0}
-              />
-              <NodeLabel x={it.px} y={it.py} text={it.rel.concept.name} size={11}
-                color={it.isTo ? courseColor : '#fff'}
-              />
-            </g>
-          ))}
+          {/* 2. 외부 노드 — 클릭 시 해당 개념으로 이동 */}
+          {items.map((it, i) => {
+            const hovered = hoveredIndex === i
+            const nodeColor = it.isTo ? courseColor : '#94a3b8'
+            return (
+              <g
+                key={i}
+                style={{ cursor: 'pointer' }}
+                onClick={() => router.push(`/${it.rel.concept.course}/${it.rel.concept.id}`)}
+                onMouseEnter={() => setHoveredIndex(i)}
+                onMouseLeave={() => setHoveredIndex(null)}
+                opacity={hovered ? 0.75 : 1}
+              >
+                <circle cx={it.px} cy={it.py} r={hovered ? NR + 3 : NR}
+                  fill={it.isTo ? 'white' : nodeColor}
+                  stroke={nodeColor}
+                  strokeWidth={it.isTo ? 2.5 : 0}
+                  style={{ transition: 'r 0.15s' }}
+                />
+                <NodeLabel x={it.px} y={it.py} text={it.rel.concept.name} size={11}
+                  color={it.isTo ? courseColor : '#fff'}
+                />
+              </g>
+            )
+          })}
 
           {/* 3. 중앙 노드 */}
           <circle cx={CX} cy={CY} r={CR} fill={courseColor} />

@@ -42,6 +42,7 @@ export default function SessionClient({ concept }: Props) {
     localStorage.removeItem(`chat_${concept.id}`)
     localStorage.removeItem(insightKey)
     localStorage.removeItem(`score_${concept.id}`)
+    localStorage.removeItem(`summary_${concept.id}`)
     setInsights([])
     setSessionKey(k => k + 1)
     setShowModal(false)
@@ -55,6 +56,12 @@ export default function SessionClient({ concept }: Props) {
         </div>
 
         <div className="w-80 shrink-0 p-6 overflow-y-auto hidden md:flex md:flex-col gap-4">
+          <button
+            onClick={() => setShowModal(true)}
+            className="text-xs text-gray-400 hover:text-red-400 transition-colors text-left"
+          >
+            처음부터 시작하기 →
+          </button>
           <ConceptGraph concept={concept} />
 
           {insights.length > 0 && (
@@ -76,12 +83,6 @@ export default function SessionClient({ concept }: Props) {
             </div>
           )}
 
-          <button
-            onClick={() => setShowModal(true)}
-            className="mt-auto text-xs text-gray-400 hover:text-red-400 transition-colors text-left"
-          >
-            처음부터 시작하기 →
-          </button>
         </div>
       </div>
 
