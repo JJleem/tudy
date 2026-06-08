@@ -31,12 +31,12 @@ function CenterNodeComponent({ data }: NodeProps<Node<CenterNodeData>>) {
         style={{
           width: 96,
           height: 96,
-          background: '#ffffff',
-          border: '3px solid #ffffff',
-          color: '#0E7AA4',
+          background: '#0E7AA4',
+          border: '3px solid #0E7AA4',
+          color: '#ffffff',
           fontSize: 13,
           padding: 8,
-          boxShadow: '0 2px 12px rgba(0,0,0,0.25)',
+          boxShadow: '0 2px 12px rgba(14,122,164,0.35)',
         }}
       >
         {data.label}
@@ -63,9 +63,9 @@ function RelatedNodeComponent({ data }: NodeProps<Node<RelatedNodeData>>) {
         style={{
           width: 80,
           height: 80,
-          background: isTo ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.08)',
-          border: `2px solid ${isTo ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.4)'}`,
-          color: isTo ? '#ffffff' : 'rgba(255,255,255,0.65)',
+          background: isTo ? '#0E7AA4' : '#64a8c0',
+          border: `2px solid ${isTo ? '#0E7AA4' : '#64a8c0'}`,
+          color: '#ffffff',
           fontSize: 12,
           fontWeight: 600,
           padding: 8,
@@ -121,7 +121,7 @@ export default function ConceptGraph({ concept }: Props) {
       })
 
       const isTo = rel.direction === 'to'
-      const edgeColor = isTo ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.4)'
+      const edgeColor = isTo ? '#0E7AA4' : '#94a3b8'
 
       edges.push({
         id: `edge-${rel.concept.id}`,
@@ -129,8 +129,8 @@ export default function ConceptGraph({ concept }: Props) {
         target: isTo ? nodeId : 'center',
         type: 'straight',
         label: rel.label,
-        labelStyle: { fill: '#ffffff', fontSize: 11, fontWeight: 600 },
-        labelBgStyle: { fill: courseColor, fillOpacity: 0.7 },
+        labelStyle: { fill: '#374151', fontSize: 11, fontWeight: 600 },
+        labelBgStyle: { fill: '#f3f4f6' },
         labelBgPadding: [3, 5],
         labelBgBorderRadius: 4,
         style: { stroke: edgeColor, strokeWidth: 2 },
@@ -150,8 +150,8 @@ export default function ConceptGraph({ concept }: Props) {
     <div className="w-full flex flex-col gap-3">
       <p className="text-xs text-gray-400">개념 관계 그래프 <span className="text-gray-300">· 드래그/스크롤로 탐색</span></p>
       <div
-        className="rounded-xl overflow-hidden"
-        style={{ height: 400, background: courseColor }}
+        className="rounded-xl overflow-hidden border border-gray-200"
+        style={{ height: 400 }}
       >
         <ReactFlow
           nodes={nodes}
@@ -171,10 +171,9 @@ export default function ConceptGraph({ concept }: Props) {
           fitView
           fitViewOptions={{ padding: 0.3 }}
           proOptions={{ hideAttribution: true }}
-          style={{ background: 'transparent' }}
         >
           <Background
-            color="rgba(255,255,255,0.12)"
+            color="#e5e7eb"
             gap={24}
             size={1.5}
             variant={BackgroundVariant.Dots}
