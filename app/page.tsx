@@ -1,7 +1,11 @@
 import Link from 'next/link'
 import Footer from '@/components/Footer'
+import CourseProgressBadge from '@/components/CourseProgressBadge'
+import { concepts } from '@/lib/concepts'
 
 export default function Home() {
+  const algorithmIds = concepts.filter(c => c.course === 'algorithm').map(c => c.id)
+  const javaIds = concepts.filter(c => c.course === 'java').map(c => c.id)
   return (
     <div className="min-h-screen bg-white flex flex-col">
     <main className="flex-1 flex flex-col items-center justify-center px-6">
@@ -28,7 +32,8 @@ export default function Home() {
           <p className="text-[#0E7AA4] text-xs font-semibold tracking-widest mb-3">ALGORITHM</p>
           <h2 className="text-gray-900 text-xl font-bold mb-1">알고리즘실무</h2>
           <p className="text-gray-400 text-sm">시간복잡도, 정렬, 탐색, DP, 그래프</p>
-          <div className="mt-6 text-[#0E7AA4] text-sm font-medium">시작하기 →</div>
+          <CourseProgressBadge conceptIds={algorithmIds} color="#0E7AA4" />
+          <div className="mt-4 text-[#0E7AA4] text-sm font-medium">시작하기 →</div>
         </Link>
 
         <Link
@@ -38,7 +43,8 @@ export default function Home() {
           <p className="text-[#0f766e] text-xs font-semibold tracking-widest mb-3">JAVA</p>
           <h2 className="text-gray-900 text-xl font-bold mb-1">자바프로그래밍</h2>
           <p className="text-gray-400 text-sm">OOP, 상속, 컬렉션, 예외처리, 스레드</p>
-          <div className="mt-6 text-[#0f766e] text-sm font-medium">시작하기 →</div>
+          <CourseProgressBadge conceptIds={javaIds} color="#0f766e" />
+          <div className="mt-4 text-[#0f766e] text-sm font-medium">시작하기 →</div>
         </Link>
       </div>
 

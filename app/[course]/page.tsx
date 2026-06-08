@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { concepts, courses, Course } from '@/lib/concepts'
 import Footer from '@/components/Footer'
 import ConceptCard from '@/components/ConceptCard'
+import CourseProgressBadge from '@/components/CourseProgressBadge'
 
 interface Props {
   params: Promise<{ course: string }>
@@ -15,6 +16,7 @@ export default async function CoursePage({ params }: Props) {
 
   const courseInfo = courses[course as Course]
   const courseConcepts = concepts.filter(c => c.course === course)
+  const conceptIds = courseConcepts.map(c => c.id)
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
@@ -29,7 +31,8 @@ export default async function CoursePage({ params }: Props) {
             {course === 'algorithm' ? 'ALGORITHM' : 'JAVA'}
           </p>
           <h1 className="text-3xl font-black text-gray-900">{courseInfo.name}</h1>
-          <p className="text-gray-400 text-sm mt-2">공부할 개념을 선택하세요</p>
+          <p className="text-gray-400 text-sm mt-2 mb-4">공부할 개념을 선택하세요</p>
+          <CourseProgressBadge conceptIds={conceptIds} color={courseInfo.color} variant="header" />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
