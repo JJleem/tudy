@@ -37,6 +37,8 @@ function CenterNodeComponent({ data }: NodeProps<Node<CenterNodeData>>) {
           fontSize: 13,
           padding: 8,
           boxShadow: '0 2px 12px rgba(14,122,164,0.35)',
+          overflow: 'visible',
+          zIndex: 10,
         }}
       >
         {data.label}
@@ -69,6 +71,8 @@ function RelatedNodeComponent({ data }: NodeProps<Node<RelatedNodeData>>) {
           fontSize: 12,
           fontWeight: 600,
           padding: 8,
+          overflow: 'visible',
+          zIndex: 5,
         }}
       >
         {data.label}
@@ -91,7 +95,7 @@ export default function ConceptGraph({ concept }: Props) {
   const courseColor = courses[concept.course].color
 
   const { nodes, edges } = useMemo(() => {
-    const radius = 140
+    const radius = 190
     const nodes: Node[] = [
       {
         id: 'center',
@@ -100,6 +104,7 @@ export default function ConceptGraph({ concept }: Props) {
         data: { label: concept.name },
         draggable: false,
         selectable: false,
+        zIndex: 10,
       },
     ]
 
@@ -118,6 +123,7 @@ export default function ConceptGraph({ concept }: Props) {
         data: { label: rel.concept.name, direction: rel.direction },
         draggable: false,
         selectable: false,
+        zIndex: 5,
       })
 
       const isTo = rel.direction === 'to'
