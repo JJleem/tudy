@@ -43,6 +43,19 @@ export default function Home() {
       <p className="mt-12 text-gray-300 text-xs">
         개념을 선택하면 AI가 질문을 던집니다. 설명할수록 이해가 깊어집니다.
       </p>
+
+      <footer className="mt-6 text-center space-y-1">
+        <p className="text-gray-400 text-xs font-medium">임재준 · 2026100427 · 컴퓨터공학과</p>
+        <div className="flex items-center justify-center gap-3 text-gray-300 text-xs">
+          <a href="mailto:leemjaejun@naver.com" className="hover:text-[#0E7AA4] transition-colors">
+            leemjaejun@naver.com
+          </a>
+          <span>·</span>
+          <a href="https://github.com/JJleem" target="_blank" rel="noopener noreferrer" className="hover:text-[#0E7AA4] transition-colors">
+            github.com/JJleem
+          </a>
+        </div>
+      </footer>
     </main>
   )
 }
