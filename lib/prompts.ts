@@ -67,6 +67,8 @@ export function getSocratesSystemPrompt(concept: Concept, courseName: string, tu
 점수: <div class="score-box">🎯 이해도 점수: <strong>XX / 100</strong></div>
 코드: \`\`\`java\n// 코드\n\`\`\`
 
+**중요**: div 블록 내부에서는 마크다운(\`**굵게**\`) 대신 HTML 태그(\`<strong>굵게</strong>\`)를 사용하세요.
+
 ## ${concept.name} 핵심 체크포인트
 ${checkpoints[concept.id] ?? '- 핵심 개념 정의\n- 사용 사례\n- 관련 개념과의 연결'}
 

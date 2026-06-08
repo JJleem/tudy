@@ -45,6 +45,20 @@ function TypingFirstMessage({ name }: { name: string }) {
   )
 }
 
+// rehype-raw는 HTML 블록 내부를 markdown으로 처리하지 않으므로 미리 변환
+function preprocessMarkdownInHtml(content: string): string {
+  return content.replace(
+    /(<div[^>]*>)([\s\S]*?)(<\/div>)/g,
+    (_, open, inner, close) => {
+      const processed = inner
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        .replace(/`(.+?)`/g, '<code>$1</code>')
+      return open + processed + close
+    }
+  )
+}
+
 function extractInsights(content: string): string[] {
   const results: string[] = []
   const regex = /<div class="feedback-good">([\s\S]*?)<\/div>/g
@@ -309,7 +323,7 @@ export default function SocratesChat({ concept, onInsight }: Props) {
                 ) : (
                   <>
                     <ReactMarkdown rehypePlugins={[rehypeRaw]} components={mdComponents}>
-                      {msg.content}
+                      {preprocessMarkdownInHtml(msg.content)}
                     </ReactMarkdown>
                     <MessageTime time={msg.time} align="left" />
                   </>
