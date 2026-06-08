@@ -105,6 +105,7 @@ export default function ConceptGraph({ concept }: Props) {
         draggable: false,
         selectable: false,
         zIndex: 10,
+        style: { background: 'transparent', border: 'none', padding: 0 },
       },
     ]
 
@@ -124,6 +125,7 @@ export default function ConceptGraph({ concept }: Props) {
         draggable: false,
         selectable: false,
         zIndex: 5,
+        style: { background: 'transparent', border: 'none', padding: 0 },
       })
 
       const isTo = rel.direction === 'to'
