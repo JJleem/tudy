@@ -95,7 +95,7 @@ export default function ConceptGraph({ concept }: Props) {
   const courseColor = courses[concept.course].color
 
   const { nodes, edges } = useMemo(() => {
-    const radius = 190
+    const radius = 130
     const nodes: Node[] = [
       {
         id: 'center',
@@ -172,10 +172,10 @@ export default function ConceptGraph({ concept }: Props) {
           zoomOnPinch={true}
           zoomOnDoubleClick={false}
           preventScrolling={false}
-          minZoom={0.4}
-          maxZoom={2}
+          minZoom={0.5}
+          maxZoom={1.5}
           fitView
-          fitViewOptions={{ padding: 0.3 }}
+          fitViewOptions={{ padding: 0.08 }}
           proOptions={{ hideAttribution: true }}
         >
           <Background
