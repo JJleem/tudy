@@ -123,14 +123,23 @@ export default function ConceptGraph({ concept }: Props) {
         </svg>
       </div>
 
-      <div className="space-y-1 text-xs text-gray-400">
+      <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 space-y-2 text-xs">
+        <p className="font-semibold text-gray-500 mb-1">그래프 읽는 법</p>
         <div className="flex items-center gap-2">
-          <span className="w-4 h-px inline-block" style={{ backgroundColor: courseColor }} />
-          <span>이 개념이 이어지는 개념</span>
+          <span className="flex items-center gap-1">
+            <span className="inline-block w-3 h-3 rounded-full" style={{ backgroundColor: courseColor }} />
+            <span className="text-gray-400">──▶</span>
+            <span className="inline-block w-3 h-3 rounded-full bg-gray-300" />
+          </span>
+          <span className="text-gray-500"><span className="font-medium" style={{ color: courseColor }}>이 개념</span>을 알면 다음으로 배우는 개념</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="w-4 h-px bg-slate-300 inline-block" />
-          <span>이 개념의 선행 개념</span>
+          <span className="flex items-center gap-1">
+            <span className="inline-block w-3 h-3 rounded-full bg-gray-300" />
+            <span className="text-gray-400">──▶</span>
+            <span className="inline-block w-3 h-3 rounded-full" style={{ backgroundColor: courseColor }} />
+          </span>
+          <span className="text-gray-500"><span className="font-medium text-gray-600">회색 노드</span>는 이 개념의 선수 지식</span>
         </div>
       </div>
     </div>
