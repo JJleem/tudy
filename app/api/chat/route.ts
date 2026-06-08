@@ -5,7 +5,7 @@ import { getConceptById, courses } from '@/lib/concepts'
 const client = new Anthropic()
 
 export async function POST(req: Request) {
-  const { messages, conceptId, course } = await req.json()
+  const { messages, conceptId, course, turn = 1 } = await req.json()
 
   const concept = getConceptById(conceptId)
   if (!concept) {
@@ -13,7 +13,7 @@ export async function POST(req: Request) {
   }
 
   const courseName = courses[course as keyof typeof courses]?.name ?? course
-  const system = getSocratesSystemPrompt(concept, courseName)
+  const system = getSocratesSystemPrompt(concept, courseName, turn)
 
   const stream = client.messages.stream({
     model: 'claude-sonnet-4-6',

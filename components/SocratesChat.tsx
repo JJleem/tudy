@@ -202,6 +202,8 @@ export default function SocratesChat({ concept, onInsight }: Props) {
   async function sendToAPI(msgs: Message[]) {
     setLoading(true)
     const apiMsgs = msgs[0]?.role === 'assistant' ? msgs.slice(1) : msgs
+    const turn = msgs.filter(m => m.role === 'user').length
+
     const res = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -209,6 +211,7 @@ export default function SocratesChat({ concept, onInsight }: Props) {
         messages: apiMsgs.map(({ role, content }) => ({ role, content })),
         conceptId: concept.id,
         course: concept.course,
+        turn,
       }),
     })
 
