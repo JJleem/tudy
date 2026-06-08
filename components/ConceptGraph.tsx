@@ -29,14 +29,14 @@ function CenterNodeComponent({ data }: NodeProps<Node<CenterNodeData>>) {
       <div
         className="flex items-center justify-center rounded-full font-bold text-center leading-tight"
         style={{
-          width: 80,
-          height: 80,
+          width: 96,
+          height: 96,
           background: data.color + '18',
-          border: `2.5px solid ${data.color}`,
+          border: `3px solid ${data.color}`,
           color: data.color,
-          fontSize: 11,
-          padding: 6,
-          boxShadow: `0 0 12px ${data.color}30`,
+          fontSize: 13,
+          padding: 8,
+          boxShadow: `0 0 16px ${data.color}30`,
         }}
       >
         {data.label}
@@ -64,14 +64,14 @@ function RelatedNodeComponent({ data }: NodeProps<Node<RelatedNodeData>>) {
       <div
         className="flex items-center justify-center rounded-full text-center leading-tight"
         style={{
-          width: 68,
-          height: 68,
+          width: 80,
+          height: 80,
           background: bgColor,
-          border: `1.5px solid ${borderColor}`,
+          border: `2px solid ${borderColor}`,
           color: textColor,
-          fontSize: 10,
-          fontWeight: 500,
-          padding: 6,
+          fontSize: 12,
+          fontWeight: 600,
+          padding: 8,
         }}
       >
         {data.label}
@@ -94,7 +94,7 @@ export default function ConceptGraph({ concept }: Props) {
   const courseColor = courses[concept.course].color
 
   const { nodes, edges } = useMemo(() => {
-    const radius = 170
+    const radius = 140
     const nodes: Node[] = [
       {
         id: 'center',
@@ -132,7 +132,7 @@ export default function ConceptGraph({ concept }: Props) {
         target: isTo ? nodeId : 'center',
         type: 'straight',
         label: rel.label,
-        labelStyle: { fill: '#6b7280', fontSize: 9 },
+        labelStyle: { fill: '#6b7280', fontSize: 11 },
         labelBgStyle: { fill: '#ffffff' },
         labelBgPadding: [2, 4],
         style: { stroke: edgeColor, strokeWidth: 1.5 },
@@ -153,7 +153,7 @@ export default function ConceptGraph({ concept }: Props) {
       <p className="text-xs text-gray-400">개념 관계 그래프</p>
       <div
         className="rounded-xl overflow-hidden border border-gray-200"
-        style={{ height: 320 }}
+        style={{ height: 400 }}
       >
         <ReactFlow
           nodes={nodes}
@@ -163,12 +163,15 @@ export default function ConceptGraph({ concept }: Props) {
           nodesDraggable={false}
           nodesConnectable={false}
           elementsSelectable={false}
-          panOnDrag={false}
-          zoomOnScroll={false}
-          zoomOnPinch={false}
+          panOnDrag={true}
+          zoomOnScroll={true}
+          zoomOnPinch={true}
+          zoomOnDoubleClick={false}
           preventScrolling={false}
+          minZoom={0.4}
+          maxZoom={2}
           fitView
-          fitViewOptions={{ padding: 0.25 }}
+          fitViewOptions={{ padding: 0.3 }}
           proOptions={{ hideAttribution: true }}
         >
           <Background
