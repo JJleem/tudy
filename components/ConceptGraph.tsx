@@ -53,8 +53,8 @@ export default function ConceptGraph({ concept }: Props) {
       const y2 = isTo ? py - ny * (NR + 5)   : CY + ny * (CR + 5)
 
       const labelW = rel.label.length * 11 + 14
-      const lx = (x1 + x2) / 2 - ny * 30
-      const ly = (y1 + y2) / 2 + nx * 30
+      const lx = (x1 + x2) / 2 - ny * 44
+      const ly = (y1 + y2) / 2 + nx * 44
 
       return {
         px, py, isTo, rel, labelW,
