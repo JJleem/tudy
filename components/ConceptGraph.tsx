@@ -27,15 +27,16 @@ function CenterNodeComponent({ data }: NodeProps<Node<CenterNodeData>>) {
       <Handle type="target" position={Position.Left} id="tl" style={{ opacity: 0 }} />
       <Handle type="target" position={Position.Right} id="tr" style={{ opacity: 0 }} />
       <div
-        className="flex items-center justify-center rounded-full font-bold text-white text-center leading-tight"
+        className="flex items-center justify-center rounded-full font-bold text-center leading-tight"
         style={{
           width: 80,
           height: 80,
-          background: data.color + '20',
+          background: data.color + '18',
           border: `2.5px solid ${data.color}`,
+          color: data.color,
           fontSize: 11,
           padding: 6,
-          boxShadow: `0 0 16px ${data.color}44`,
+          boxShadow: `0 0 12px ${data.color}30`,
         }}
       >
         {data.label}
@@ -46,8 +47,9 @@ function CenterNodeComponent({ data }: NodeProps<Node<CenterNodeData>>) {
 
 function RelatedNodeComponent({ data }: NodeProps<Node<RelatedNodeData>>) {
   const isTo = data.direction === 'to'
-  const borderColor = isTo ? '#6366f1' : '#475569'
-  const textColor = isTo ? '#a5b4fc' : '#94a3b8'
+  const borderColor = isTo ? '#0E7AA4' : '#94a3b8'
+  const bgColor = isTo ? '#e0f2fe' : '#f1f5f9'
+  const textColor = isTo ? '#0E7AA4' : '#64748b'
 
   return (
     <>
@@ -64,7 +66,7 @@ function RelatedNodeComponent({ data }: NodeProps<Node<RelatedNodeData>>) {
         style={{
           width: 68,
           height: 68,
-          background: '#18181b',
+          background: bgColor,
           border: `1.5px solid ${borderColor}`,
           color: textColor,
           fontSize: 10,
@@ -122,7 +124,7 @@ export default function ConceptGraph({ concept }: Props) {
       })
 
       const isTo = rel.direction === 'to'
-      const edgeColor = isTo ? '#6366f1' : '#64748b'
+      const edgeColor = isTo ? '#0E7AA4' : '#94a3b8'
 
       edges.push({
         id: `edge-${rel.concept.id}`,
@@ -130,8 +132,8 @@ export default function ConceptGraph({ concept }: Props) {
         target: isTo ? nodeId : 'center',
         type: 'straight',
         label: rel.label,
-        labelStyle: { fill: '#71717a', fontSize: 9 },
-        labelBgStyle: { fill: '#09090b' },
+        labelStyle: { fill: '#6b7280', fontSize: 9 },
+        labelBgStyle: { fill: '#ffffff' },
         labelBgPadding: [2, 4],
         style: { stroke: edgeColor, strokeWidth: 1.5 },
         markerEnd: {
@@ -148,9 +150,9 @@ export default function ConceptGraph({ concept }: Props) {
 
   return (
     <div className="w-full flex flex-col gap-3">
-      <p className="text-xs text-zinc-500">개념 관계 그래프</p>
+      <p className="text-xs text-gray-400">개념 관계 그래프</p>
       <div
-        className="rounded-xl overflow-hidden border border-zinc-800"
+        className="rounded-xl overflow-hidden border border-gray-200"
         style={{ height: 320 }}
       >
         <ReactFlow
@@ -170,20 +172,20 @@ export default function ConceptGraph({ concept }: Props) {
           proOptions={{ hideAttribution: true }}
         >
           <Background
-            color="#27272a"
+            color="#e5e7eb"
             gap={20}
             size={1}
             variant={BackgroundVariant.Dots}
           />
         </ReactFlow>
       </div>
-      <div className="space-y-1 text-xs text-zinc-600">
+      <div className="space-y-1 text-xs text-gray-400">
         <div className="flex items-center gap-2">
-          <span className="w-4 h-px bg-indigo-500 inline-block" />
+          <span className="w-4 h-px bg-[#0E7AA4] inline-block" />
           <span>이 개념이 이어지는 개념</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="w-4 h-px bg-slate-600 inline-block" />
+          <span className="w-4 h-px bg-slate-300 inline-block" />
           <span>이 개념의 선행 개념</span>
         </div>
       </div>

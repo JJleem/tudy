@@ -17,30 +17,33 @@ export default async function SessionPage({ params }: Props) {
   const courseInfo = courses[course as Course]
 
   return (
-    <div className="h-screen bg-[#0a0a0a] flex flex-col">
+    <div className="h-screen bg-white flex flex-col">
       {/* Header */}
-      <header className="flex items-center justify-between px-6 py-4 border-b border-zinc-800 shrink-0">
+      <header className="flex items-center justify-between px-6 py-4 border-b border-gray-200 shrink-0">
         <div className="flex items-center gap-4">
-          <Link href={`/${course}`} className="text-zinc-600 hover:text-zinc-400 text-sm transition-colors">
+          <Link href={`/${course}`} className="text-gray-400 hover:text-gray-600 text-sm transition-colors">
             ←
           </Link>
           <div>
-            <p className="text-xs font-medium" style={{ color: courseInfo.color }}>
+            <p className="text-xs font-semibold" style={{ color: courseInfo.color }}>
               {courseInfo.name}
             </p>
-            <h1 className="text-white font-bold">{concept.name}</h1>
+            <h1 className="text-gray-900 font-bold">{concept.name}</h1>
           </div>
         </div>
-        <div className="text-center">
-          <p className="text-zinc-600 text-xs">AI&apos;s</p>
-          <p className="text-white font-black text-lg leading-none">TUDY</p>
+        <div className="flex items-center gap-2">
+          <img src="/img/자산_24x.png" alt="HYCU" className="w-7 h-7 object-contain" />
+          <div className="text-right">
+            <p className="text-[#0E7AA4] text-xs font-medium leading-none">AI&apos;s</p>
+            <p className="text-gray-900 font-black text-base leading-none">TUDY</p>
+          </div>
         </div>
       </header>
 
       {/* Body */}
       <div className="flex flex-1 overflow-hidden">
         {/* Chat */}
-        <div className="flex-1 flex flex-col border-r border-zinc-800 overflow-hidden">
+        <div className="flex-1 flex flex-col border-r border-gray-200 overflow-hidden">
           <SocratesChat concept={concept} />
         </div>
 

@@ -43,8 +43,8 @@ export const edges: ConceptEdge[] = [
 ]
 
 export const courses = {
-  algorithm: { name: '알고리즘실무', color: '#6366f1' },
-  java: { name: '자바프로그래밍', color: '#10b981' },
+  algorithm: { name: '알고리즘실무', color: '#0E7AA4' },
+  java: { name: '자바프로그래밍', color: '#0f766e' },
 }
 
 export function getConceptById(id: string) {
