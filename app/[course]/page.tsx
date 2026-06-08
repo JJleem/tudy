@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { concepts, courses, Course } from '@/lib/concepts'
 import Footer from '@/components/Footer'
+import ConceptCard from '@/components/ConceptCard'
 
 interface Props {
   params: Promise<{ course: string }>
@@ -33,15 +34,12 @@ export default async function CoursePage({ params }: Props) {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {courseConcepts.map(concept => (
-            <Link
+            <ConceptCard
               key={concept.id}
-              href={`/${course}/${concept.id}`}
-              className="rounded-xl border border-gray-200 bg-white p-5 hover:shadow-md hover:border-gray-300 transition-all block"
-            >
-              <div className="w-5 h-0.5 rounded mb-3" style={{ backgroundColor: courseInfo.color }} />
-              <h3 className="text-gray-900 font-semibold mb-1">{concept.name}</h3>
-              <p className="text-gray-400 text-xs leading-relaxed">{concept.description}</p>
-            </Link>
+              concept={concept}
+              courseColor={courseInfo.color}
+              course={course}
+            />
           ))}
         </div>
       </div>

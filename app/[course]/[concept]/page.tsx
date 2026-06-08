@@ -1,8 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { getConceptById, courses, Course } from '@/lib/concepts'
-import SocratesChat from '@/components/SocratesChat'
-import ConceptGraph from '@/components/ConceptGraph'
+import SessionClient from '@/components/SessionClient'
 
 interface Props {
   params: Promise<{ course: string; concept: string }>
@@ -41,17 +40,7 @@ export default async function SessionPage({ params }: Props) {
       </header>
 
       {/* Body */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Chat */}
-        <div className="flex-1 flex flex-col border-r border-gray-200 overflow-hidden">
-          <SocratesChat concept={concept} />
-        </div>
-
-        {/* Graph */}
-        <div className="w-80 shrink-0 p-6 overflow-y-auto hidden md:block">
-          <ConceptGraph concept={concept} />
-        </div>
-      </div>
+      <SessionClient concept={concept} />
     </div>
   )
 }
