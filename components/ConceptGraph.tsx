@@ -12,7 +12,7 @@ import {
 import type { Node, Edge, NodeProps } from '@xyflow/react'
 import { getRelatedConcepts, courses, Concept } from '@/lib/concepts'
 
-type CenterNodeData = { label: string; color: string }
+type CenterNodeData = { label: string }
 type RelatedNodeData = { label: string; direction: 'to' | 'from' }
 
 function CenterNodeComponent({ data }: NodeProps<Node<CenterNodeData>>) {
@@ -31,12 +31,12 @@ function CenterNodeComponent({ data }: NodeProps<Node<CenterNodeData>>) {
         style={{
           width: 96,
           height: 96,
-          background: data.color + '18',
-          border: `3px solid ${data.color}`,
-          color: data.color,
+          background: '#ffffff',
+          border: '3px solid #ffffff',
+          color: '#0E7AA4',
           fontSize: 13,
           padding: 8,
-          boxShadow: `0 0 16px ${data.color}30`,
+          boxShadow: '0 2px 12px rgba(0,0,0,0.25)',
         }}
       >
         {data.label}
@@ -47,9 +47,6 @@ function CenterNodeComponent({ data }: NodeProps<Node<CenterNodeData>>) {
 
 function RelatedNodeComponent({ data }: NodeProps<Node<RelatedNodeData>>) {
   const isTo = data.direction === 'to'
-  const borderColor = isTo ? '#0E7AA4' : '#94a3b8'
-  const bgColor = isTo ? '#e0f2fe' : '#f1f5f9'
-  const textColor = isTo ? '#0E7AA4' : '#64748b'
 
   return (
     <>
@@ -66,9 +63,9 @@ function RelatedNodeComponent({ data }: NodeProps<Node<RelatedNodeData>>) {
         style={{
           width: 80,
           height: 80,
-          background: bgColor,
-          border: `2px solid ${borderColor}`,
-          color: textColor,
+          background: isTo ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.08)',
+          border: `2px solid ${isTo ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.4)'}`,
+          color: isTo ? '#ffffff' : 'rgba(255,255,255,0.65)',
           fontSize: 12,
           fontWeight: 600,
           padding: 8,
@@ -100,7 +97,7 @@ export default function ConceptGraph({ concept }: Props) {
         id: 'center',
         type: 'center',
         position: { x: 0, y: 0 },
-        data: { label: concept.name, color: courseColor },
+        data: { label: concept.name },
         draggable: false,
         selectable: false,
       },
@@ -124,7 +121,7 @@ export default function ConceptGraph({ concept }: Props) {
       })
 
       const isTo = rel.direction === 'to'
-      const edgeColor = isTo ? '#0E7AA4' : '#94a3b8'
+      const edgeColor = isTo ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.4)'
 
       edges.push({
         id: `edge-${rel.concept.id}`,
@@ -132,10 +129,11 @@ export default function ConceptGraph({ concept }: Props) {
         target: isTo ? nodeId : 'center',
         type: 'straight',
         label: rel.label,
-        labelStyle: { fill: '#6b7280', fontSize: 11 },
-        labelBgStyle: { fill: '#ffffff' },
-        labelBgPadding: [2, 4],
-        style: { stroke: edgeColor, strokeWidth: 1.5 },
+        labelStyle: { fill: '#ffffff', fontSize: 11, fontWeight: 600 },
+        labelBgStyle: { fill: courseColor, fillOpacity: 0.7 },
+        labelBgPadding: [3, 5],
+        labelBgBorderRadius: 4,
+        style: { stroke: edgeColor, strokeWidth: 2 },
         markerEnd: {
           type: MarkerType.ArrowClosed,
           color: edgeColor,
@@ -150,10 +148,10 @@ export default function ConceptGraph({ concept }: Props) {
 
   return (
     <div className="w-full flex flex-col gap-3">
-      <p className="text-xs text-gray-400">개념 관계 그래프</p>
+      <p className="text-xs text-gray-400">개념 관계 그래프 <span className="text-gray-300">· 드래그/스크롤로 탐색</span></p>
       <div
-        className="rounded-xl overflow-hidden border border-gray-200"
-        style={{ height: 400 }}
+        className="rounded-xl overflow-hidden"
+        style={{ height: 400, background: courseColor }}
       >
         <ReactFlow
           nodes={nodes}
@@ -173,11 +171,12 @@ export default function ConceptGraph({ concept }: Props) {
           fitView
           fitViewOptions={{ padding: 0.3 }}
           proOptions={{ hideAttribution: true }}
+          style={{ background: 'transparent' }}
         >
           <Background
-            color="#e5e7eb"
-            gap={20}
-            size={1}
+            color="rgba(255,255,255,0.12)"
+            gap={24}
+            size={1.5}
             variant={BackgroundVariant.Dots}
           />
         </ReactFlow>
@@ -188,7 +187,7 @@ export default function ConceptGraph({ concept }: Props) {
           <span>이 개념이 이어지는 개념</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="w-4 h-px bg-slate-300 inline-block" />
+          <span className="w-4 h-px bg-gray-300 inline-block opacity-60" />
           <span>이 개념의 선행 개념</span>
         </div>
       </div>
