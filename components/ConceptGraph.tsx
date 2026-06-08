@@ -1,200 +1,123 @@
 'use client'
 
 import { useMemo } from 'react'
-import {
-  ReactFlow,
-  Background,
-  BackgroundVariant,
-  Handle,
-  Position,
-  MarkerType,
-} from '@xyflow/react'
-import type { Node, Edge, NodeProps } from '@xyflow/react'
 import { getRelatedConcepts, courses, Concept } from '@/lib/concepts'
-
-type CenterNodeData = { label: string }
-type RelatedNodeData = { label: string; direction: 'to' | 'from' }
-
-function CenterNodeComponent({ data }: NodeProps<Node<CenterNodeData>>) {
-  return (
-    <>
-      <Handle type="source" position={Position.Top} style={{ opacity: 0 }} />
-      <Handle type="source" position={Position.Bottom} style={{ opacity: 0 }} />
-      <Handle type="source" position={Position.Left} style={{ opacity: 0 }} />
-      <Handle type="source" position={Position.Right} style={{ opacity: 0 }} />
-      <Handle type="target" position={Position.Top} id="tt" style={{ opacity: 0 }} />
-      <Handle type="target" position={Position.Bottom} id="tb" style={{ opacity: 0 }} />
-      <Handle type="target" position={Position.Left} id="tl" style={{ opacity: 0 }} />
-      <Handle type="target" position={Position.Right} id="tr" style={{ opacity: 0 }} />
-      <div
-        className="flex items-center justify-center rounded-full font-bold text-center leading-tight"
-        style={{
-          width: 96,
-          height: 96,
-          background: '#0E7AA4',
-          border: '3px solid #0E7AA4',
-          color: '#ffffff',
-          fontSize: 13,
-          padding: 8,
-          boxShadow: '0 2px 12px rgba(14,122,164,0.35)',
-          overflow: 'visible',
-          zIndex: 10,
-        }}
-      >
-        {data.label}
-      </div>
-    </>
-  )
-}
-
-function RelatedNodeComponent({ data }: NodeProps<Node<RelatedNodeData>>) {
-  const isTo = data.direction === 'to'
-
-  return (
-    <>
-      <Handle type="source" position={Position.Top} style={{ opacity: 0 }} />
-      <Handle type="source" position={Position.Bottom} style={{ opacity: 0 }} />
-      <Handle type="source" position={Position.Left} style={{ opacity: 0 }} />
-      <Handle type="source" position={Position.Right} style={{ opacity: 0 }} />
-      <Handle type="target" position={Position.Top} id="tt" style={{ opacity: 0 }} />
-      <Handle type="target" position={Position.Bottom} id="tb" style={{ opacity: 0 }} />
-      <Handle type="target" position={Position.Left} id="tl" style={{ opacity: 0 }} />
-      <Handle type="target" position={Position.Right} id="tr" style={{ opacity: 0 }} />
-      <div
-        className="flex items-center justify-center rounded-full text-center leading-tight"
-        style={{
-          width: 80,
-          height: 80,
-          background: isTo ? '#0E7AA4' : '#64a8c0',
-          border: `2px solid ${isTo ? '#0E7AA4' : '#64a8c0'}`,
-          color: '#ffffff',
-          fontSize: 12,
-          fontWeight: 600,
-          padding: 8,
-          overflow: 'visible',
-          zIndex: 5,
-        }}
-      >
-        {data.label}
-      </div>
-    </>
-  )
-}
-
-const nodeTypes = {
-  center: CenterNodeComponent,
-  related: RelatedNodeComponent,
-}
 
 interface Props {
   concept: Concept
 }
 
+const W = 320
+const H = 340
+const CX = W / 2
+const CY = H / 2
+const ORBIT = 118
+const CR = 44  // center node radius
+const NR = 36  // outer node radius
+
 export default function ConceptGraph({ concept }: Props) {
   const related = getRelatedConcepts(concept.id)
   const courseColor = courses[concept.course].color
 
-  const { nodes, edges } = useMemo(() => {
-    const radius = 160
-    const nodes: Node[] = [
-      {
-        id: 'center',
-        type: 'center',
-        position: { x: 0, y: 0 },
-        data: { label: concept.name },
-        draggable: false,
-        selectable: false,
-        zIndex: 10,
-        style: { background: 'transparent', border: 'none', padding: 0 },
-      },
-    ]
-
-    const edges: Edge[] = []
-
-    related.forEach((rel, i) => {
+  const nodes = useMemo(() =>
+    related.map((rel, i) => {
       const angle = (2 * Math.PI * i) / related.length - Math.PI / 2
-      const x = Math.round(radius * Math.cos(angle))
-      const y = Math.round(radius * Math.sin(angle))
-      const nodeId = `related-${rel.concept.id}`
+      return { x: CX + ORBIT * Math.cos(angle), y: CY + ORBIT * Math.sin(angle), ...rel }
+    }),
+    [related]
+  )
 
-      nodes.push({
-        id: nodeId,
-        type: 'related',
-        position: { x, y },
-        data: { label: rel.concept.name, direction: rel.direction },
-        draggable: false,
-        selectable: false,
-        zIndex: 5,
-        style: { background: 'transparent', border: 'none', padding: 0 },
-      })
-
-      const isTo = rel.direction === 'to'
-      const edgeColor = isTo ? '#0E7AA4' : '#94a3b8'
-
-      edges.push({
-        id: `edge-${rel.concept.id}`,
-        source: isTo ? 'center' : nodeId,
-        target: isTo ? nodeId : 'center',
-        type: 'straight',
-        label: rel.label,
-        labelStyle: { fill: '#374151', fontSize: 11, fontWeight: 600 },
-        labelBgStyle: { fill: '#f3f4f6' },
-        labelBgPadding: [3, 5],
-        labelBgBorderRadius: 4,
-        style: { stroke: edgeColor, strokeWidth: 2 },
-        markerEnd: {
-          type: MarkerType.ArrowClosed,
-          color: edgeColor,
-          width: 14,
-          height: 14,
-        },
-      })
-    })
-
-    return { nodes, edges }
-  }, [concept, courseColor, related])
+  const toId = `arr-to-${concept.id}`
+  const fromId = `arr-from-${concept.id}`
 
   return (
     <div className="w-full flex flex-col gap-3">
-      <p className="text-xs text-gray-400">개념 관계 그래프 <span className="text-gray-300">· 드래그/스크롤로 탐색</span></p>
-      <div
-        className="rounded-xl overflow-hidden border border-gray-200"
-        style={{ height: 460 }}
-      >
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          nodeTypes={nodeTypes}
-          nodeOrigin={[0.5, 0.5]}
-          nodesDraggable={false}
-          nodesConnectable={false}
-          elementsSelectable={false}
-          panOnDrag={true}
-          zoomOnScroll={true}
-          zoomOnPinch={true}
-          zoomOnDoubleClick={false}
-          preventScrolling={false}
-          minZoom={0.5}
-          maxZoom={1.5}
-          fitView
-          fitViewOptions={{ padding: 0.04 }}
-          proOptions={{ hideAttribution: true }}
-        >
-          <Background
-            color="#e5e7eb"
-            gap={24}
-            size={1.5}
-            variant={BackgroundVariant.Dots}
-          />
-        </ReactFlow>
+      <p className="text-xs text-gray-400">개념 관계 그래프</p>
+      <div className="rounded-xl overflow-hidden border border-gray-200 bg-gray-50">
+        <svg width="100%" viewBox={`0 0 ${W} ${H}`} style={{ display: 'block' }}>
+          <defs>
+            <marker id={toId} markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+              <polygon points="0 0, 9 3.5, 0 7" fill={courseColor} />
+            </marker>
+            <marker id={fromId} markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+              <polygon points="0 0, 9 3.5, 0 7" fill="#94a3b8" />
+            </marker>
+          </defs>
+
+          {/* Edges */}
+          {nodes.map((pos, i) => {
+            const isTo = pos.direction === 'to'
+            const dx = pos.x - CX
+            const dy = pos.y - CY
+            const dist = Math.sqrt(dx * dx + dy * dy)
+            const nx = dx / dist
+            const ny = dy / dist
+
+            const x1 = isTo ? CX + nx * CR       : pos.x - nx * NR
+            const y1 = isTo ? CY + ny * CR       : pos.y - ny * NR
+            const x2 = isTo ? pos.x - nx * (NR + 5) : CX + nx * (CR + 5)
+            const y2 = isTo ? pos.y - ny * (NR + 5) : CY + ny * (CR + 5)
+
+            const color = isTo ? courseColor : '#94a3b8'
+            const mx = (x1 + x2) / 2 + (-ny * 13)
+            const my = (y1 + y2) / 2 + (nx * 13)
+
+            return (
+              <g key={i}>
+                <line x1={x1} y1={y1} x2={x2} y2={y2}
+                  stroke={color} strokeWidth={2}
+                  markerEnd={`url(#${isTo ? toId : fromId})`}
+                />
+                <text x={mx} y={my} textAnchor="middle" dominantBaseline="middle"
+                  fontSize={10} fontWeight="600" fill={color}>
+                  {pos.label}
+                </text>
+              </g>
+            )
+          })}
+
+          {/* Center node */}
+          <circle cx={CX} cy={CY} r={CR} fill={courseColor} />
+          <foreignObject x={CX - CR} y={CY - CR} width={CR * 2} height={CR * 2}>
+            <div style={{
+              width: '100%', height: '100%', display: 'flex',
+              alignItems: 'center', justifyContent: 'center',
+              textAlign: 'center', fontSize: 13, fontWeight: 700,
+              color: '#fff', lineHeight: 1.3, padding: 6,
+            }}>
+              {concept.name}
+            </div>
+          </foreignObject>
+
+          {/* Outer nodes */}
+          {nodes.map((pos, i) => {
+            const fill = pos.direction === 'to' ? courseColor : '#94a3b8'
+            return (
+              <g key={i}>
+                <circle cx={pos.x} cy={pos.y} r={NR} fill={fill} />
+                <foreignObject x={pos.x - NR} y={pos.y - NR} width={NR * 2} height={NR * 2}>
+                  <div style={{
+                    width: '100%', height: '100%', display: 'flex',
+                    alignItems: 'center', justifyContent: 'center',
+                    textAlign: 'center', fontSize: 11, fontWeight: 600,
+                    color: '#fff', lineHeight: 1.3, padding: 4,
+                  }}>
+                    {pos.concept.name}
+                  </div>
+                </foreignObject>
+              </g>
+            )
+          })}
+        </svg>
       </div>
+
       <div className="space-y-1 text-xs text-gray-400">
         <div className="flex items-center gap-2">
-          <span className="w-4 h-px bg-[#0E7AA4] inline-block" />
+          <span className="w-4 h-px inline-block" style={{ backgroundColor: courseColor }} />
           <span>이 개념이 이어지는 개념</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="w-4 h-px bg-gray-300 inline-block opacity-60" />
+          <span className="w-4 h-px bg-slate-300 inline-block" />
           <span>이 개념의 선행 개념</span>
         </div>
       </div>
